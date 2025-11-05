@@ -1,49 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faArrowRight, faArrowLeft, faTimes, faJedi, faFilter, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import LoginPage from './components/LoginPage';
+import { faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { AuthProvider, useAuth } from './auth/AuthContext';
+import Login from './auth/Login';
+import CharactersList from './CharactersList';
 import './App.css';
-
-interface Character {
-  name: string;
-  height: string;
-  mass: string;
-  created: string;
-  films: string[];
-  birth_year: string;
-  homeworld: string;
-  species: string[];
-  url: string;
-  homeworldDetails?: {
-    name: string;
-    terrain: string;
-    climate: string;
-    population: string;
-  };
-  speciesNames?: string[];
-}
-
-const ITEMS_PER_PAGE = 10;
-
-const AppContent: React.FC = () => {
-  const { isAuthenticated, logout } = useAuth();
-  const navigate = useNavigate();
-  
-  // Move all hooks to the top, before any conditional returns
-  const [allCharacters, setAllCharacters] = useState<Character[]>([]);
-  const [filteredCharacters, setFilteredCharacters] = useState<Character[]>([]);
-  const [displayedCharacters, setDisplayedCharacters] = useState<Character[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
-  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [showFilters, setShowFilters] = useState(false);
   const filterRef = React.useRef<HTMLDivElement>(null);
 
   // Close filter when clicking outside
@@ -377,18 +339,6 @@ const AppContent: React.FC = () => {
     return colors[index];
   };
 
-  // Handle logout with proper navigation
-  const handleLogout = () => {
-    logout();
-    // Use setTimeout to ensure navigation happens after the state update
-    setTimeout(() => navigate('/login'), 0);
-  };
-
-  // Redirect to login if not authenticated
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
   // Get a random image URL from Picsum Photos
   const getRandomImageUrl = (id: string) => {
     const randomId = id.split('/').filter(Boolean).pop();
@@ -399,18 +349,9 @@ const AppContent: React.FC = () => {
     <div className="min-h-screen bg-star-wars-dark text-white">
       {/* Header */}
       <header className="bg-black py-6 shadow-lg">
-        <div className="container mx-auto px-4 flex items-center justify-between">
-          <div className="flex items-center">
-            <FontAwesomeIcon icon={faJedi} className="text-star-wars-yellow text-4xl mr-4" />
-            <h1 className="text-3xl font-bold text-star-wars-yellow">Star Wars Characters</h1>
-          </div>
-          <button 
-            onClick={handleLogout}
-            className="flex items-center px-4 py-2 bg-star-wars-yellow hover:bg-yellow-500 text-black font-semibold rounded transition-colors"
-          >
-            <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
-            Logout
-          </button>
+        <div className="container mx-auto px-4 flex items-center justify-center">
+          <FontAwesomeIcon icon={faJedi} className="text-star-wars-yellow text-4xl mr-4" />
+          <h1 className="text-3xl font-bold text-star-wars-yellow">Star Wars Characters</h1>
         </div>
       </header>
 
@@ -631,6 +572,7 @@ const AppContent: React.FC = () => {
         </div>
       )}
     </div>
+    </div>
   );
 };
 
@@ -639,8 +581,12 @@ const App: React.FC = () => {
     <Router>
       <AuthProvider>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<AppContent />} />
+          <Route path="/" element={
+            <ProtectedRoute>
+              <AppContent />
+            </ProtectedRoute>
+          } />
+          <Route path="/login" element={<Login />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
@@ -648,4 +594,18 @@ const App: React.FC = () => {
   );
 };
 
+// Main App component with Router and AuthProvider
+const App: React.FC = () => {
+  return (
+    <Router>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </Router>
+  );
+};
+
 export default App;
+
+// Move the main app content to a separate component
+const CharactersContent: React.FC = () => {
