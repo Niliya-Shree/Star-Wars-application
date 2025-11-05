@@ -406,10 +406,11 @@ const AppContent: React.FC = () => {
           </div>
           <button 
             onClick={handleLogout}
-            className="flex items-center px-4 py-2 bg-star-wars-yellow hover:bg-yellow-500 text-black font-semibold rounded transition-colors"
+            className="flex items-center px-3 md:px-4 py-2 bg-star-wars-yellow hover:bg-yellow-500 text-black font-semibold rounded transition-colors"
+            aria-label="Logout"
           >
-            <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
-            Logout
+            <FontAwesomeIcon icon={faSignOutAlt} className="md:mr-2" />
+            <span className="hidden md:inline">Logout</span>
           </button>
         </div>
       </header>
@@ -560,8 +561,9 @@ const AppContent: React.FC = () => {
             </div>
 
             {/* Pagination */}
-            <div className="flex flex-col items-center mt-8 space-y-4">
+            <div className="flex flex-col items-center mt-8 space-y-4 w-full">
               <div className="flex justify-between items-center w-full">
+                {/* Previous Button - Always visible */}
                 <button
                   onClick={handlePrevPage}
                   disabled={page === 1}
@@ -570,7 +572,8 @@ const AppContent: React.FC = () => {
                   <FontAwesomeIcon icon={faArrowLeft} className="mr-2" /> Previous
                 </button>
                 
-                <div className="flex space-x-2">
+                {/* Page Numbers - Hidden on mobile, visible on md screens and up */}
+                <div className="hidden md:flex space-x-2">
                   {page > 3 && (
                     <>
                       <button
