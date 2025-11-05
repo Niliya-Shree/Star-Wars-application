@@ -2,8 +2,21 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
+// Types
+interface Character {
+  name: string;
+  height: string;
+  mass: string;
+  [key: string]: any; // For any additional properties
+}
+
+interface CharacterCardProps {
+  character: Character;
+  onClick: (character: Character) => void;
+}
+
 // Mock the CharacterCard component
-const CharacterCard = ({ character, onClick }) => (
+const CharacterCard = ({ character, onClick }: CharacterCardProps) => (
   <div 
     className="character-card" 
     onClick={() => onClick(character)}
@@ -15,8 +28,14 @@ const CharacterCard = ({ character, onClick }) => (
   </div>
 );
 
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  character: Character;
+}
+
 // Mock the Modal component
-const Modal = ({ isOpen, onClose, character }) => {
+const Modal = ({ isOpen, onClose, character }: ModalProps) => {
   if (!isOpen) return null;
   
   return (

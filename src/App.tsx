@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faArrowRight, faArrowLeft, faTimes, faJedi, faFilter, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
@@ -313,7 +313,7 @@ const AppContent: React.FC = () => {
     setFilteredCharacters(filtered);
     setPage(1);
     setTotalPages(Math.ceil(filtered.length / ITEMS_PER_PAGE));
-  }, [searchTerm, allCharacters, filters, availableFilters.films]);
+  }, [searchTerm, allCharacters, filters, availableFilters.films, availableFilters.species]);
   
   // Update displayed characters when page or filtered characters change
   useEffect(() => {
