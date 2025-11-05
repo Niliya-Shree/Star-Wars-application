@@ -560,22 +560,67 @@ const AppContent: React.FC = () => {
             </div>
 
             {/* Pagination */}
-            <div className="flex justify-between items-center mt-8">
-              <button
-                onClick={handlePrevPage}
-                disabled={page === 1}
-                className={`flex items-center px-4 py-2 rounded-md ${page === 1 ? 'bg-gray-600 cursor-not-allowed' : 'bg-star-wars-blue hover:bg-blue-600'} text-white`}
-              >
-                <FontAwesomeIcon icon={faArrowLeft} className="mr-2" /> Previous
-              </button>
-              <span className="text-lg font-medium">Page {page} of {totalPages}</span>
-              <button
-                onClick={handleNextPage}
-                disabled={page >= totalPages}
-                className={`flex items-center px-4 py-2 rounded-md ${page >= totalPages ? 'bg-gray-600 cursor-not-allowed' : 'bg-star-wars-blue hover:bg-blue-600'} text-white`}
-              >
-                Next <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-              </button>
+            <div className="flex flex-col items-center mt-8 space-y-4">
+              <div className="flex justify-between items-center w-full">
+                <button
+                  onClick={handlePrevPage}
+                  disabled={page === 1}
+                  className={`flex items-center px-4 py-2 rounded-md ${page === 1 ? 'bg-gray-600 cursor-not-allowed' : 'bg-star-wars-yellow hover:bg-yellow-600 text-black'} font-semibold`}
+                >
+                  <FontAwesomeIcon icon={faArrowLeft} className="mr-2" /> Previous
+                </button>
+                
+                <div className="flex space-x-2">
+                  {page > 3 && (
+                    <>
+                      <button
+                        onClick={() => setPage(1)}
+                        className={`px-3 py-1 rounded-md ${page === 1 ? 'bg-yellow-700 text-white' : 'bg-star-wars-yellow hover:bg-yellow-600 text-black'} font-semibold`}
+                      >
+                        1
+                      </button>
+                      {page > 4 && <span className="text-white self-center">...</span>}
+                    </>
+                  )}
+                  
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter(p => {
+                      if (page <= 3) return p <= 5;
+                      if (page >= totalPages - 2) return p >= totalPages - 4;
+                      return p >= page - 2 && p <= page + 2;
+                    })
+                    .map(p => (
+                      <button
+                        key={p}
+                        onClick={() => setPage(p)}
+                        className={`px-3 py-1 rounded-md ${page === p ? 'bg-yellow-700 text-white' : 'bg-star-wars-yellow hover:bg-yellow-600 text-black'} font-semibold`}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  
+                  {page < totalPages - 2 && (
+                    <>
+                      {page < totalPages - 3 && <span className="text-white self-center">...</span>}
+                      <button
+                        onClick={() => setPage(totalPages)}
+                        className={`px-3 py-1 rounded-md ${page === totalPages ? 'bg-yellow-700 text-white' : 'bg-star-wars-yellow hover:bg-yellow-600 text-black'} font-semibold`}
+                      >
+                        {totalPages}
+                      </button>
+                    </>
+                  )}
+                </div>
+                
+                <button
+                  onClick={handleNextPage}
+                  disabled={page >= totalPages}
+                  className={`flex items-center px-4 py-2 rounded-md ${page >= totalPages ? 'bg-gray-600 cursor-not-allowed' : 'bg-star-wars-yellow hover:bg-yellow-600 text-black'} font-semibold`}
+                >
+                  Next <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+                </button>
+              </div>
+              <span className="text-sm text-gray-300">Page {page} of {totalPages}</span>
             </div>
           </>
         )}
