@@ -1,6 +1,11 @@
+
+
+
 # Star Wars Character Explorer
 
 A responsive web application that allows users to explore Star Wars characters and their details, built with React and TypeScript.
+
+🔗 **Live Demo:** https://starwar-niliya.netlify.app/
 
 ## Features
 
